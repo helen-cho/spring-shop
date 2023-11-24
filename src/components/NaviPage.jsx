@@ -3,6 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import SearchPage from './shop/SearchPage';
+import ShopList from './shop/ShopList';
 
 const NaviPage = () => {
     const location = useLocation();
@@ -36,6 +37,7 @@ const NaviPage = () => {
 
         <Routes>
             <Route path="/shop/search" element={<SearchPage/>}/>
+            <Route path="/shop/list" element={<ShopList/>}/>
         </Routes>
     </>
     )

@@ -1,16 +1,19 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Table, InputGroup, Form, Row, Col, Button } from 'react-bootstrap';
+import { Table, InputGroup, Form, Row, Col, Button, Spinner } from 'react-bootstrap';
 
 const SearchPage = () => {
+    const [loading, setLoading] = useState(false);
     const [list, setList] = useState([]);
     const [query, setQuery] = useState("맥북");
     const [page, setPage] = useState(1);
     
     const getList = async() => {
+        setLoading(true);
         const res=await axios(`/search/list.json?page=${page}&size=5&query=${query}`);
         const data=res.data.items.map(s=>s && {...s, title:stripHtmlTags(s.title)});
         setList(data);
+        setLoading(false);
     }
 
     useEffect(()=>{
@@ -39,6 +42,8 @@ const SearchPage = () => {
         return doc.body.textContent || "";
     }
 
+    if(loading) return
+        <div className='my-5 text-center'><Spinner/></div>
     return (
         <div className='my-5'>
             <h1 className='text-center mb-5'>상품검색</h1>
