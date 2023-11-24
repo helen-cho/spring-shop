@@ -4,6 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import SearchPage from './shop/SearchPage';
 import ShopList from './shop/ShopList';
+import ShopUpdate from './shop/ShopUpdate';
 
 const NaviPage = () => {
     const location = useLocation();
@@ -22,8 +23,8 @@ const NaviPage = () => {
                         <Nav.Link href="/shop/search" className={path.indexOf('/shop/search')!==-1 && 'active'}>
                             상품검색
                         </Nav.Link>
-                        <Nav.Link href="/shop/list" className={path.indexOf('/shop/list')!==-1 && 'active'}>
-                            상품목록
+                        <Nav.Link href="/shop/list" className={path.indexOf('/shop/')!==-1 && 'active'}>
+                            상품관리
                         </Nav.Link>
                     </Nav>
                     <Nav>
@@ -38,6 +39,7 @@ const NaviPage = () => {
         <Routes>
             <Route path="/shop/search" element={<SearchPage/>}/>
             <Route path="/shop/list" element={<ShopList/>}/>
+            <Route path="/shop/update/:pid" element={<ShopUpdate/>}/>
         </Routes>
     </>
     )
