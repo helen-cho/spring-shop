@@ -6,14 +6,20 @@ import SearchPage from './shop/SearchPage';
 import ShopList from './shop/ShopList';
 import ShopUpdate from './shop/ShopUpdate';
 import LoginPage from './user/LoginPage';
+import {getCookie, delCookie} from '../common.js'
 
 const NaviPage = () => {
     const location = useLocation();
     const path=location.pathname;
+
+    const uid=getCookie("uid");
+    sessionStorage.setItem("uid", uid);
+
     const onLogout = (e) => {
         e.preventDefault();
         if(window.confirm("로그아웃하실래요?")) {
             sessionStorage.clear();
+            delCookie("uid")
             window.location.href="/";
         }
     }

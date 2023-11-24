@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import {Form, Card, Row, Col, Button} from 'react-bootstrap'
+import {setCookie} from "../../common.js";
 
 const LoginPage = () => {
+    const [checked, setChecked] = useState(false);
     const [form, setForm] = useState({
         uid:'',
         upass:''
@@ -22,6 +24,9 @@ const LoginPage = () => {
         }else if(res.data==2) {
             alert("비밀번호가 일치하지않습니다!");
         }else{
+            if(checked){
+                setCookie("uid", uid, 7);
+            }
             sessionStorage.setItem("uid", uid);
             window.location.href="/";
         }
@@ -40,6 +45,11 @@ const LoginPage = () => {
                                 placeholder='비밀번호' className='mb-2' type="password"/>
                             <Button className='w-100' type="submit">로그인</Button>
                         </form>
+                        <div className='mt-2 text-end'>
+                            <input type="checkbox" onChange={(e)=>setChecked(e.target.checked)}
+                                checked={checked} /> 
+                            <span className='ms-2'>로그인 상태저장</span>
+                        </div>
                     </Card>
                 </Col>
             </Row>
