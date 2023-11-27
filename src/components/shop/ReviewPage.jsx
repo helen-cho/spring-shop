@@ -1,14 +1,34 @@
-import React, { useState } from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import {Button, Form} from 'react-bootstrap'
+import "../Pagination.css";
+import Pagination from "react-js-pagination";
 
 const ReviewPage = ({pid}) => {
     const [body, setBody] = useState('');
-    const onRegister = () => {
+    const [page, setPage] = useState(1);
+    const [list, setList] = useState([]);
+    const [total, setTotal]= useState(0);
+    const size=3;
+
+    const getList = async() => {
+        const res=await axios(`/review/list.json?page=${page}&size=${size}&pid=${pid}`);
+        setList(res.data.list);
+        setTotal(res.data.total);
+    }
+
+    useEffect(()=>{
+        getList();
+    }, [page]);
+
+    const onRegister = async() => {
         if(body===""){
             alert("리뷰내용을 작성하세요!");
         }else{
             const data={pid, uid:sessionStorage.getItem("uid"), body}
-            console.log(data);
+            await axios.post("/review/insert", data);
+            setBody("");
+            getList();
         }
     }
 
@@ -27,6 +47,30 @@ const ReviewPage = ({pid}) => {
                 <div>
                     <Button className='w-100'>로그인</Button>
                 </div>    
+            }
+            <div><span>리뷰수:{total}</span></div>
+            <hr/>
+            <div>
+                {list.map(r=>
+                    <div>
+                        <div>
+                            <small>{r.regdate}</small>
+                            <small className='ms-2'>({r.uid})</small>
+                        </div>
+                        <div>{r.body}</div>
+                        <hr/>
+                    </div>
+                )}
+            </div>
+            {total > size &&
+                <Pagination
+                    activePage={page}
+                    itemsCountPerPage={size}
+                    totalItemsCount={total}
+                    pageRangeDisplayed={10}
+                    prevPageText={"‹"}
+                    nextPageText={"›"}
+                    onChange={(page)=>setPage(page)}/>
             }
         </div>
     )
