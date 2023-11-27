@@ -1,10 +1,17 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Spinner, Row, Col, Card } from 'react-bootstrap';
+import { Spinner, Row, Col, Card, InputGroup, Form, Button } from 'react-bootstrap';
+import "./Pagination.css";
+import Pagination from "react-js-pagination";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+    const location=useLocation();
+    const search=new URLSearchParams(location.search);
+    const navi = useNavigate();
+
     const size=6;
-    const page=1;
+    const page=search.get("page") ? parseInt(search.get("page")) : 1;
     const [query, setQuery] = useState("");
 
     const [list, setList] = useState([]);
@@ -22,12 +29,26 @@ const HomePage = () => {
 
     useEffect(()=>{
         getList();
-    }, []);
+    }, [location]);
+
+    const onSubmit = (e) =>{
+        e.preventDefault();
+        navi(`/?page=1&size=${size}&query=${query}`);
+    }
 
     if(loading) return <div className='my-5 text-center'><Spinner variant='primary'/></div>
     return (
         <div className='my-5'>
-            <Row>
+            <Row className='mb-2'>
+                <Col md={4} className='mb-2'>
+                    <form onSubmit={onSubmit}>
+                        <InputGroup>
+                            <Form.Control placeholder='상품명,제조사' value={query}
+                                onChange={(e)=>setQuery(e.target.value)}/>
+                            <Button type="submit">검색</Button>
+                        </InputGroup>
+                    </form>
+                </Col>
                 <Col>
                     <span>상품수: {total}개</span>
                 </Col>
@@ -35,16 +56,28 @@ const HomePage = () => {
             <Row>
                 {list.map(shop=>
                     <Col key={shop.pid} xs={6} md={4} lg={2} className='mb-3'>
-                        <Card>
-                            <Card.Body>
-                                <img src={`/display?file=${shop.image}`} width="90%"/>
-                                <div className='ellipsis'>{shop.title}</div>
-                                <div className='price'>{shop.fmtprice}원</div>
-                            </Card.Body>
+                        <Card style={{cursor:'pointer'}}>
+                            <Link to={`/shop/info/${shop.pid}`}>
+                                <Card.Body>
+                                    <img src={`/display?file=${shop.image}`} width="90%"/>
+                                    <div className='ellipsis'>{shop.title}</div>
+                                    <div className='price'>{shop.fmtprice}원</div>
+                                </Card.Body>
+                            </Link>
                         </Card>
                     </Col>
                 )}
             </Row>
+            {total > size &&
+                <Pagination
+                    activePage={page}
+                    itemsCountPerPage={size}
+                    totalItemsCount={total}
+                    pageRangeDisplayed={10}
+                    prevPageText={"‹"}
+                    nextPageText={"›"}
+                    onChange={(page)=>{navi(`/?page=${page}&size=${size}&query=${query}`)}}/>
+            }
         </div>
     )
 }

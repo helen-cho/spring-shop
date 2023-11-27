@@ -44,3 +44,8 @@ a {
 .price {
   font-size: 0.8rem;
 }
+
+.image {
+  border: 1px solid gray;
+  border-radius: 20px;
+}
