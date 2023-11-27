@@ -7,6 +7,7 @@ import ShopList from './shop/ShopList';
 import ShopUpdate from './shop/ShopUpdate';
 import LoginPage from './user/LoginPage';
 import {getCookie, delCookie} from '../common.js'
+import HomePage from './HomePage.jsx';
 
 const NaviPage = () => {
     const location = useLocation();
@@ -67,6 +68,7 @@ const NaviPage = () => {
             <Route path="/shop/list" element={<ShopList/>}/>
             <Route path="/shop/update/:pid" element={<ShopUpdate/>}/>
             <Route path="/login" element={<LoginPage/>}/>
+            <Route path="/" element={<HomePage/>}/>
         </Routes>
     </>
     )

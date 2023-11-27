@@ -40,3 +40,7 @@ a {
 .body {
   cursor: pointer;
 }
+
+.price {
+  font-size: 0.8rem;
+}
