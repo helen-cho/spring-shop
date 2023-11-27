@@ -49,3 +49,7 @@ a {
   border: 1px solid gray;
   border-radius: 20px;
 }
+
+.heart {
+  color: red;
+}
