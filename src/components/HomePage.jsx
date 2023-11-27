@@ -4,6 +4,7 @@ import { Spinner, Row, Col, Card, InputGroup, Form, Button } from 'react-bootstr
 import "./Pagination.css";
 import Pagination from "react-js-pagination";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaHeart } from "react-icons/fa";
 
 const HomePage = () => {
     const location=useLocation();
@@ -57,13 +58,20 @@ const HomePage = () => {
                 {list.map(shop=>
                     <Col key={shop.pid} xs={6} md={4} lg={2} className='mb-3'>
                         <Card style={{cursor:'pointer'}}>
-                            <Link to={`/shop/info/${shop.pid}`}>
-                                <Card.Body>
-                                    <img src={`/display?file=${shop.image}`} width="90%"/>
-                                    <div className='ellipsis'>{shop.title}</div>
-                                    <div className='price'>{shop.fmtprice}원</div>
-                                </Card.Body>
-                            </Link>
+                                <Link to={`/shop/info/${shop.pid}`}>
+                                    <Card.Body>
+                                        <img src={`/display?file=${shop.image}`} width="100%"/>
+                                        <div className='ellipsis'>{shop.title}</div>
+                                        <div className='price'>{shop.fmtprice}원</div>
+                                    </Card.Body>
+                                </Link>
+                                <Card.Footer>
+                                    <span className='heart'>
+                                        <FaHeart/>
+                                        <small style={{fontSize:'0.7rem'}}>{shop.fcnt}</small>
+                                    </span>
+                                </Card.Footer>
+
                         </Card>
                     </Col>
                 )}
