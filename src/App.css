@@ -52,4 +52,5 @@ a {
 
 .heart {
   color: red;
+  cursor: pointer;
 }

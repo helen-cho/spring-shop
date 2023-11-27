@@ -15,7 +15,7 @@ const NaviPage = () => {
     const path=location.pathname;
 
     const uid=getCookie("uid");
-    sessionStorage.setItem("uid", uid);
+    if(uid) sessionStorage.setItem("uid", uid);
 
     const onLogout = (e) => {
         e.preventDefault();

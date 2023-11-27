@@ -8,7 +8,7 @@ import { FaRegHeart } from "react-icons/fa";
 const ShopInfo = () => {
     const {pid} = useParams();
     const [shop, setShop] = useState('');
-    const {title, maker, image, fmtprice, fmtdate, ucnt} = shop;
+    const {title, maker, image, fmtprice, fmtdate, ucnt, fcnt} = shop;
     const getShop = async() => {
         const res = await axios(`/shop/info/${pid}?uid=${sessionStorage.getItem("uid")}`);
         setShop(res.data);
@@ -17,6 +17,24 @@ const ShopInfo = () => {
     useEffect(()=>{
         getShop();
     }, []);
+    
+    const onClickRegHeart = async() => {
+        if(!sessionStorage.getItem("uid")){
+            sessionStorage.setItem("target", `/shop/info/${pid}`);
+            window.location.href="/login";
+        }else{
+            //좋아요추가
+            await axios(`/shop/insert/favorites?pid=${pid}&uid=${sessionStorage.getItem("uid")}`);
+            alert("좋아요추가!");
+            getShop();
+        }
+    }
+
+    const onClickHeart = async() => {
+        await axios(`/shop/delete/favorites?uid=${sessionStorage.getItem("uid")}&pid=${pid}`);
+        alert("좋아요삭제!");
+        getShop();
+    }
 
     return (
         <div className='my-5'>
@@ -29,7 +47,8 @@ const ShopInfo = () => {
                     <h5>
                         [{pid}] {title}
                         <span className='heart mx-2'>
-                            {ucnt === 0 ? <FaRegHeart/> : <FaHeart/>}
+                            {ucnt === 0 ? <FaRegHeart onClick={onClickRegHeart}/> : <FaHeart onClick={onClickHeart}/>}
+                            <small style={{fontSize:'0.7rem'}}>{fcnt}</small>
                         </span>
                     </h5>
                     <hr/>
