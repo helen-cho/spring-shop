@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Row, Col, Button, Tab, Tabs } from 'react-bootstrap'
+import { Row, Col, Button, Tab, Tabs} from 'react-bootstrap'
 import { FaHeart } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import ReviewPage from './ReviewPage';
@@ -38,6 +38,15 @@ const ShopInfo = () => {
         getShop();
     }
 
+    const onClickCart = async() => {
+        await axios.post("/cart/insert", {uid:sessionStorage.getItem("uid"), pid})
+        if(window.confirm("쇼핑을 계속하실래요?")){
+            window.location.href="/";
+        }else{
+            window.location.href="/cart/list";
+        }
+    }
+
     return (
         <div className='my-5'>
             <h1 className='text-center mb-5'>[{pid}] 상품정보</h1>
@@ -60,7 +69,8 @@ const ShopInfo = () => {
                     <hr />
                     <div className='text-center'>
                         <Button variant='warning' className='px-5'>바로구매</Button>
-                        <Button variant='success' className='px-5 ms-3'>장바구니</Button>
+                        <Button onClick={onClickCart}
+                            variant='success' className='px-5 ms-3'>장바구니</Button>
                     </div>
                 </Col>
             </Row>
