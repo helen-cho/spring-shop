@@ -65,12 +65,15 @@ const ReviewPage = ({pid}) => {
         setList(data);
     }
 
-    const onClickSave = (cid, body, text)=>{
+    const onClickSave = async(cid, body, text)=>{
         if(body===text){
             onClickCancel(cid);
         }else{
             if(window.confirm(`${cid}번 리뷰를 수정하실래요?`)){
                 //리뷰수정
+                await axios.post("/review/update", {cid, body});
+                alert("수정완료!");
+                getList();
             }
         }
     }

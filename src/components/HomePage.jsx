@@ -5,6 +5,7 @@ import "./Pagination.css";
 import Pagination from "react-js-pagination";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaHeart } from "react-icons/fa";
+import { BsChatLeftDots } from "react-icons/bs";
 
 const HomePage = () => {
     const location=useLocation();
@@ -61,14 +62,20 @@ const HomePage = () => {
                                 <Link to={`/shop/info/${shop.pid}`}>
                                     <Card.Body>
                                         <img src={`/display?file=${shop.image}`} width="100%"/>
-                                        <div className='ellipsis'>{shop.title}</div>
+                                        <div className='ellipsis'>[{shop.pid}]{shop.title}</div>
                                         <div className='price'>{shop.fmtprice}원</div>
                                     </Card.Body>
                                 </Link>
-                                <Card.Footer>
+                                <Card.Footer className='text-end'>
                                     <span className='heart'>
                                         <FaHeart/>
-                                        <small style={{fontSize:'0.7rem'}}>{shop.fcnt}</small>
+                                        <small className='ms-1'
+                                            style={{fontSize:'0.7rem'}}>{shop.fcnt}</small>
+                                    </span>
+                                    <span className='ms-2'>
+                                        <BsChatLeftDots/>
+                                        <small className='ms-1'
+                                            style={{fontSize:'0.7rem'}}>{shop.reviewcnt}</small>
                                     </span>
                                 </Card.Footer>
 
