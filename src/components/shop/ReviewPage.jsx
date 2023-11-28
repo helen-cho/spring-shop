@@ -13,7 +13,8 @@ const ReviewPage = ({pid}) => {
 
     const getList = async() => {
         const res=await axios(`/review/list.json?page=${page}&size=${size}&pid=${pid}`);
-        setList(res.data.list);
+        let data=res.data.list.map(r=>r && {...r, ellipsis:true, view:true});
+        setList(data);
         setTotal(res.data.total);
     }
 
@@ -32,6 +33,28 @@ const ReviewPage = ({pid}) => {
         }
     }
 
+    const onClickLogin = () => {
+        sessionStorage.setItem("target", `/shop/info/${pid}`);
+        window.location.href="/login";
+    }
+
+    const onClickBody = (cid) => {
+        const data=list.map(r=>r.cid===cid ? {...r, ellipsis:!r.ellipsis} : r);
+        setList(data);
+    }
+
+    const onDelete = async(cid)=> {
+        if(window.confirm(`${cid}번 리뷰를 삭제하실래요?`)) {
+            await axios.post(`/review/delete/${cid}`);
+            getList();
+        }
+    }
+
+    const onClickUpdate = (cid)=> {
+        const data=list.map(r=>r.cid===cid ? {...r, view:false} : r);
+        setList(data);
+    }
+
     return (
         <div>
             {sessionStorage.getItem("uid") ?
@@ -44,20 +67,44 @@ const ReviewPage = ({pid}) => {
                     </div>    
                 </div>
                 :    
-                <div>
-                    <Button className='w-100'>로그인</Button>
+                <div className='mb-5'>
+                    <Button className='w-100' onClick={onClickLogin}>로그인</Button>
                 </div>    
             }
             <div><span>리뷰수:{total}</span></div>
             <hr/>
             <div>
                 {list.map(r=>
-                    <div>
+                    <div key={r.cid}>
                         <div>
                             <small>{r.regdate}</small>
                             <small className='ms-2'>({r.uid})</small>
                         </div>
-                        <div>{r.body}</div>
+                        {r.view ? 
+                        //댓글
+                        <>
+                            <div onClick={()=>onClickBody(r.cid)} 
+                                className={r.ellipsis && 'ellipsis2'} style={{cursor:'pointer'}}>[{r.cid}] {r.body}
+                            </div>    
+                            {sessionStorage.getItem("uid")===r.uid && 
+                                <div className='text-end'>
+                                    <Button onClick={()=>onClickUpdate(r.cid)}
+                                        variant='success btn-sm'>수정</Button>
+                                    <Button onClick={()=>onDelete(r.cid)}
+                                        variant='danger btn-sm ms-2'>삭제</Button>
+                                </div>        
+                            }
+                        </>
+                        :
+                        //댓글수정   
+                        <div>
+                            <Form.Control as="textarea" rows="5" value={r.body}/>
+                            <div className='text-end mt-2'>
+                                <Button variant='primary btn-sm'>저장</Button>
+                                <Button variant='secondary btn-sm ms-2'>취소</Button>
+                            </div>    
+                        </div>    
+                        }
                         <hr/>
                     </div>
                 )}
