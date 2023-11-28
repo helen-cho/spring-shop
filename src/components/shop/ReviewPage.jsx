@@ -13,7 +13,7 @@ const ReviewPage = ({pid}) => {
 
     const getList = async() => {
         const res=await axios(`/review/list.json?page=${page}&size=${size}&pid=${pid}`);
-        let data=res.data.list.map(r=>r && {...r, ellipsis:true, view:true});
+        let data=res.data.list.map(r=>r && {...r, ellipsis:true, view:true, text:r.body});
         setList(data);
         setTotal(res.data.total);
     }
@@ -55,6 +55,26 @@ const ReviewPage = ({pid}) => {
         setList(data);
     }
 
+    const onClickCancel = (cid) => {
+        const data=list.map(r=>r.cid===cid ? {...r, view:true, body:r.text} : r);
+        setList(data);
+    }
+
+    const onChangeBody = (e, cid) => {
+        const data=list.map(r=>r.cid===cid ? {...r, body:e.target.value} : r);
+        setList(data);
+    }
+
+    const onClickSave = (cid, body, text)=>{
+        if(body===text){
+            onClickCancel(cid);
+        }else{
+            if(window.confirm(`${cid}번 리뷰를 수정하실래요?`)){
+                //리뷰수정
+            }
+        }
+    }
+
     return (
         <div>
             {sessionStorage.getItem("uid") ?
@@ -84,7 +104,8 @@ const ReviewPage = ({pid}) => {
                         //댓글
                         <>
                             <div onClick={()=>onClickBody(r.cid)} 
-                                className={r.ellipsis && 'ellipsis2'} style={{cursor:'pointer'}}>[{r.cid}] {r.body}
+                                className={r.ellipsis && 'ellipsis2'} style={{cursor:'pointer'}}>
+                                [{r.cid}] {r.text}
                             </div>    
                             {sessionStorage.getItem("uid")===r.uid && 
                                 <div className='text-end'>
@@ -98,10 +119,13 @@ const ReviewPage = ({pid}) => {
                         :
                         //댓글수정   
                         <div>
-                            <Form.Control as="textarea" rows="5" value={r.body}/>
+                            <Form.Control onChange={(e)=>onChangeBody(e, r.cid)}
+                                as="textarea" rows="5" value={r.body}/>
                             <div className='text-end mt-2'>
-                                <Button variant='primary btn-sm'>저장</Button>
-                                <Button variant='secondary btn-sm ms-2'>취소</Button>
+                                <Button onClick={()=>onClickSave(r.cid, r.body, r.text)}
+                                    variant='primary btn-sm'>저장</Button>
+                                <Button onClick={()=>onClickCancel(r.cid)}
+                                    variant='secondary btn-sm ms-2'>취소</Button>
                             </div>    
                         </div>    
                         }
