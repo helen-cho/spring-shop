@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import {Table} from 'react-bootstrap'
 import "../Pagination.css";
 import Pagination from "react-js-pagination";
+import ModalOrder from './ModalOrder';
 
 const OrderList = () => {
     const [page, setPage] = useState(1);
@@ -32,9 +33,9 @@ const OrderList = () => {
                         <td>주문번호</td>
                         <td>이름</td>
                         <td>주문일</td>
-                        <td>배송지</td>
                         <td>전화</td>
                         <td>금액</td>
+                        <td>상세보기</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,9 +44,9 @@ const OrderList = () => {
                         <td>{p.oid}</td>
                         <td>{p.uname}({p.uid})</td>
                         <td>{p.fmtdate}</td>
-                        <td>{p.address1} {p.address2}</td>
                         <td>{p.phone}</td>
                         <td className='text-end'>{p.fmtsum}원</td>
+                        <td><ModalOrder p={p}/></td>
                     </tr>
                     )}
                 </tbody>
