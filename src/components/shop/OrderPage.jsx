@@ -33,14 +33,12 @@ const OrderPage = ({ list, sum }) => {
     const onOrder = async() => {
         if(window.confirm("위 상품들을 주문하실래요?")){
             const orders = list.filter(s=>s.checked);
-            //console.log(orders);
-            const res=await axios.post("/purchase/insert", 
-                    {
-                        ...form, 
-                        sum:sum, 
-                        orders
-                    });
-            alert(res.data);
+            const res=await axios.post("/purchase/insert",{...form, sum:sum, orders });
+            //장바구니비우기
+            for(const order of orders){
+                await axios.post(`/cart/delete/${order.cid}`);
+            }
+            window.location.href=`/order/complete/${res.data}`;
         }
     }
 
@@ -59,8 +57,11 @@ const OrderPage = ({ list, sum }) => {
                 <tbody>
                     {list.map(s => s.checked &&
                         <tr>
-                            <td><img src={`/display?file=${s.image}`} width="30" /></td>
-                            <td>{s.title}</td>
+                            <td className='text-center'>
+                                [{s.cid}]
+                                <img src={`/display?file=${s.image}`} width="30" />
+                            </td>
+                            <td>[{s.pid}] {s.title}</td>
                             <td className='text-end'>{s.fmtprice}</td>
                             <td className='text-end'>{s.qnt}개</td>
                             <td className='text-end'>{s.fmtsum}</td>
